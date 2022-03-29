@@ -1,0 +1,1 @@
+export const HERO_STATE = { normal: "normal", attack: "attack" }
