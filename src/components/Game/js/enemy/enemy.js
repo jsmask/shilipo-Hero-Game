@@ -4,6 +4,7 @@ import Bus from "@/utils/bus"
 import Health from "./health";
 import { TimelineMax } from "gsap"
 import { ENEMY_STATE } from "../types"
+import {playHit} from "../audio"
 
 const createDefaultOptions = () => {
     return {
@@ -63,6 +64,7 @@ class Enemy {
         if (!bump.hit(e.pos, this.target, true, true)) return;
         this.hp -= e.power;
         this.health.cut(this.hp)
+        playHit();
         if (this.hp <= 0) {
             this.die();
         }
