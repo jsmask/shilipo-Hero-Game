@@ -15,6 +15,12 @@ const enemyList0 = {
     enemy_0_1: getEnemyImageUrl("278-2"),
 }
 
+const enemyList1 = {
+    enemy_1_0: getEnemyImageUrl("288-1"),
+    enemy_1_1: getEnemyImageUrl("288-2"),
+    enemy_1_2: getEnemyImageUrl("288-3"),
+}
+
 const npcList = {
     npc_face_0: getNpcImageUrl("17-3"),
 }
@@ -28,5 +34,5 @@ export default {
     ...heroList,
     ...npcList,
     ...enemyList0,
-
+    ...enemyList1,
 }

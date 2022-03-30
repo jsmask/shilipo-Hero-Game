@@ -4,7 +4,7 @@ import Bus from "@/utils/bus"
 import Scene from "./scene"
 import Hero from "./hero"
 import Npc from "./npc"
-import Enemy from "./enemy/enemy";
+import createEnemy from "./enemy";
 
 export default class MainScene extends Scene {
     constructor(game) {
@@ -45,14 +45,25 @@ export default class MainScene extends Scene {
         this.stage.addChild(this.stageContainer);
     }
     addEnemy() {
-        let enemy = new Enemy({
+        let enemy_options = {
             x: 150,
             y: 140,
-            vx:-1,
-            vy:1,
+            vx: -1,
+            vy: 1,
             stage: this.stage
-        })
+        }
+        let enemy_options1 = {
+            x: 100,
+            y: 190,
+            vx: -1,
+            vy: 1,
+            stage: this.stage
+        }
+        let enemy = createEnemy("jiuweng", enemy_options)
+        let enemy1 = createEnemy("yong", enemy_options1)
         this.enemyList.push(enemy)
+        this.enemyList.push(enemy1)
+        console.log(this.enemyList)
     }
     addHero() {
         this.hero = new Hero({
@@ -79,9 +90,9 @@ export default class MainScene extends Scene {
         await this.beginGame()
         this.addEnemy();
         this.npc = new Npc({
-            x:650,
-            y:90,
-            stage:this.stage
+            x: 650,
+            y: 90,
+            stage: this.stage
         })
     }
     async beginGame() {

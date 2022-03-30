@@ -5,23 +5,25 @@ import Health from "./health";
 import { TimelineMax } from "gsap"
 import { ENEMY_STATE } from "../types"
 
-const defaultOptions = {
-    x: 0,
-    y: 0,
-    target: new Container(),
-    stage: new Container(),
-    animationSpeed: .1,
-    hp: 3,
-    state: ENEMY_STATE.normal,
-    score: 1,
-    vx: 0,
-    vy: 0,
-    speed:2,
+const createDefaultOptions = () => {
+    return {
+        x: 0,
+        y: 0,
+        target: new Container(),
+        stage: new Container(),
+        animationSpeed: .1,
+        hp: 3,
+        state: ENEMY_STATE.normal,
+        score: 1,
+        vx: 0,
+        vy: 0,
+        speed: 2,
+    }
 }
 
 class Enemy {
     constructor(options) {
-        Object.assign(this, defaultOptions, options)
+        Object.assign(this, createDefaultOptions(), options)
         this.init();
         return this;
     }
@@ -33,6 +35,7 @@ class Enemy {
         this.action();
         this.addHealth();
         Bus.$on("attack", this.hunt.bind(this));
+        return this;
     }
     move() {
         if (this.state === ENEMY_STATE.normal) {
@@ -45,28 +48,19 @@ class Enemy {
     }
     addHealth() {
         this.health = new Health({
-            x: 0,
-            y: -this.target.width / 2,
+            x: -10,
+            y: -10,
             maxHp: this.hp,
             nowHp: this.hp,
             parent: this.target
         })
     }
     action() {
-        let list = []
-        for (let i = 0; i < 2; i++) {
-            list.push(createSprite({ name: "enemy_0_" + i, anchor: 0.5 }).texture);
-        }
-        this.animatedSprite = new AnimatedSprite(list);
-        this.animatedSprite.loop = true;
-        this.animatedSprite.animationSpeed = this.animationSpeed;
-        this.animatedSprite.gotoAndPlay(0);
-        this.target.addChild(this.animatedSprite)
-        // this.target.pivot.set(this.target.width / 2, this.target.height / 2)
+        // 行动
     }
     hunt(e) {
         if (this.hp <= 0 || this.state === ENEMY_STATE.die) return;
-        if (!bump.hit(e.pos, this.target)) return;
+        if (!bump.hit(e.pos, this.target, true, true)) return;
         this.hp -= e.power;
         this.health.cut(this.hp)
         if (this.hp <= 0) {
@@ -82,15 +76,16 @@ class Enemy {
         this.dieAni = new TimelineMax({
             onComplete: this.destroy.bind(this)
         })
-        this.dieAni.to(this.target, .5, {
+        this.dieAni.to(this.target, .6, {
             alpha: .1,
             x: this.target.x - this.target.width * 0.36,
             y: -this.target.height,
-        }).to(this.target.scale, .3, {
+            delay: .15
+        }).to(this.target.scale, .6, {
             x: 1.3,
             y: 1.3,
         }, "-=.6")
-            .to(this.target.skew, .3, {
+            .to(this.target.skew, .2, {
                 x: .02,
                 y: .04,
             }, "-=.8")
