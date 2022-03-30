@@ -5,6 +5,7 @@ import Scene from "./scene"
 import Hero from "./hero"
 import Npc from "./npc"
 import createEnemy from "./enemy";
+import {playBgm} from "./audio"
 
 export default class MainScene extends Scene {
     constructor(game) {
@@ -88,6 +89,7 @@ export default class MainScene extends Scene {
     }
     async onStart() {
         await this.beginGame()
+        playBgm();
         this.addEnemy();
         this.npc = new Npc({
             x: 650,

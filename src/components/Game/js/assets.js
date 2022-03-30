@@ -1,4 +1,4 @@
-import { getImageUrl, getEnemyImageUrl, getHeroImageUrl, getNpcImageUrl, getStageImageUrl, getOtherImageUrl } from "./tools"
+import { getImageUrl, getEnemyImageUrl, getHeroImageUrl, getNpcImageUrl, getStageImageUrl, getOtherImageUrl,getAudioUrl } from "./tools"
 
 const stage = getStageImageUrl("s0", "jpg");
 
@@ -24,15 +24,24 @@ const enemyList1 = {
 const npcList = {
     npc_face_0: getNpcImageUrl("17-3"),
 }
+
 for (let i = 16; i <= 36; i++) {
     npcList["npc_drink_" + i] = getNpcImageUrl("1271-" + i)
 }
 
+let audioList = {
+    hit:getAudioUrl("hit"),
+    bgm:getAudioUrl("bgm"),
+    click:getAudioUrl("click"),
+    success:getAudioUrl("success"),
+}
 
 export default {
     stage,
+    ...audioList,
     ...heroList,
     ...npcList,
     ...enemyList0,
     ...enemyList1,
+
 }

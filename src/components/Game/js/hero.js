@@ -2,6 +2,7 @@ import { Text, Graphics, Container, AnimatedSprite } from "pixi.js";
 import { createSprite } from "./tools"
 import { HERO_STATE } from "./types"
 import Bus from "@/utils/bus"
+import {playHit} from "./audio"
 
 const defaultOptions = {
     x: 0,
@@ -34,6 +35,7 @@ class Hero {
     attack() {
         if (this.state === HERO_STATE.attack) return;
         this.state = HERO_STATE.attack;
+        playHit();
         this.clearChildren();
         let attack_list = []
         for (let i = 0; i < 3; i++) {

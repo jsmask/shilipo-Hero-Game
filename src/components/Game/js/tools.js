@@ -50,6 +50,9 @@ export function getOtherImageUrl(name, ext = "png") {
     return new URL(`/src/assets/other/${name}.${ext}`, import.meta.url).href
 }
 
+export function getAudioUrl(name, ext = "mp3") {
+    return new URL(`/src/assets/audio/${name}.${ext}`, import.meta.url).href
+}
 
 export function trottle(handler = null, delay = 1000) {
     let last = 0;
