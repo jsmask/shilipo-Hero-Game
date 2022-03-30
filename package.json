@@ -8,6 +8,8 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "bump.js": "^1.0.3",
+    "gsap": "^3.10.0",
     "mitt": "^3.0.0",
     "pixi.js": "^6.3.0",
     "vue": "^3.2.25"

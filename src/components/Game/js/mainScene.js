@@ -3,22 +3,38 @@ import { createSprite, trottle } from "./tools"
 import Bus from "@/utils/bus"
 import Scene from "./scene"
 import Hero from "./hero"
+import Npc from "./npc"
 import Enemy from "./enemy/enemy";
 
 export default class MainScene extends Scene {
     constructor(game) {
         super(game)
+        this.enemyList = []
         return this;
     }
     init() {
+        this.enemyList.length = 0;
         this.clear();
         this.addStageContainer();
         this.stageContainer.addChild(this.drawBgStage())
+        this.addUiContainer();
         this.addHero();
         this.onStart();
         return this
     }
-
+    update(delta) {
+        if (!this.stage.visible) return;
+        // this.enemyList.forEach(enemy => {
+        //     enemy && enemy.move()
+        // })
+    }
+    addUiContainer() {
+        const { game } = this;
+        this.uiContainer = new Container();
+        this.uiContainer.width = game.width;
+        this.uiContainer.height = game.height;
+        this.stage.addChild(this.uiContainer);
+    }
     addStageContainer() {
         const { game } = this;
         this.stageContainer = new Container();
@@ -29,11 +45,14 @@ export default class MainScene extends Scene {
         this.stage.addChild(this.stageContainer);
     }
     addEnemy() {
-        new Enemy({
+        let enemy = new Enemy({
             x: 150,
             y: 140,
+            vx:-1,
+            vy:1,
             stage: this.stage
         })
+        this.enemyList.push(enemy)
     }
     addHero() {
         this.hero = new Hero({
@@ -50,7 +69,8 @@ export default class MainScene extends Scene {
             width,
             height,
             x: 0,
-            y: 0
+            y: 0,
+            anchor: 0
         })
         sprite.zIndex = 9
         return sprite;
@@ -58,12 +78,19 @@ export default class MainScene extends Scene {
     async onStart() {
         await this.beginGame()
         this.addEnemy();
+        this.npc = new Npc({
+            x:650,
+            y:90,
+            stage:this.stage
+        })
     }
     async beginGame() {
-        let handleClick = trottle(function(e){
-            Bus.$emit("attack", e.data.global); 
-        }, 200)
-        this.stage.on("pointerdown", handleClick)
+        this.stage.on("pointerdown", e => {
+            Bus.$emit("attack", {
+                power: 1,
+                pos: e.data.global
+            });
+        })
 
     }
 }

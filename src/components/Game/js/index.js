@@ -69,7 +69,7 @@ export default class Game {
   }
   update() {
     this.app.ticker.add((delta) => {
-
+      this.mainScene.update(delta)
     })
   }
 }

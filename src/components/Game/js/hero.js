@@ -29,18 +29,19 @@ class Hero {
     normal() {
         this.state = HERO_STATE.normal;
         this.clearChildren();
-        this.target.addChild(createSprite({ name: "hero_normal_0" }))
+        this.target.addChild(createSprite({ name: "hero_normal_0", anchor: 0 }))
     }
     attack() {
+        if (this.state === HERO_STATE.attack) return;
         this.state = HERO_STATE.attack;
         this.clearChildren();
         let attack_list = []
         for (let i = 0; i < 3; i++) {
-            attack_list.push(createSprite({ name: "hero_attack_" + i }).texture);
+            attack_list.push(createSprite({ name: "hero_attack_" + i, anchor: 0 }).texture);
         }
         this.attackAnimatedSprite = new AnimatedSprite(attack_list);
         this.attackAnimatedSprite.loop = false;
-        this.attackAnimatedSprite.animationSpeed = .25;
+        this.attackAnimatedSprite.animationSpeed = .2;
         this.attackAnimatedSprite.gotoAndPlay(0);
         this.attackAnimatedSprite.onComplete = () => {
             this.normal()

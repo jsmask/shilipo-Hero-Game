@@ -1,4 +1,5 @@
 import { Text, Graphics, Container, AnimatedSprite } from "pixi.js";
+import { TimelineMax } from "gsap"
 
 const defaultOptions = {
     x: 0,
@@ -18,19 +19,39 @@ class Health {
     init() {
         this.addBox();
         this.addHpProgress();
+        this.hitAni = new TimelineMax({
+            onComplete: () => {
+                if (this.nowHp <= 0) {
+                    this.destroy()
+                }
+            }
+        })
+    }
+    show() {
+        this.target.visible = this.box.visible = true;
+    }
+    hide() {
+        this.target.visible = this.box.visible = false;
     }
     cut(hp) {
         this.nowHp = hp
         const { maxHp, nowHp } = this;
-        if (this.nowHp >= 0) this.target.width = 72 * (nowHp / maxHp)
+        if (this.nowHp > 0) {
+            this.hitAni.to(this.target, .1, {
+                width: 72 * (nowHp / maxHp)
+            })
+        }
+        else {
+            this.target.width = 0
+        }
     }
     addBox() {
-        let box = new Graphics();
-        box.lineStyle(2, 0x333333, 10);
-        box.beginFill(0xfc6343, 1);
-        box.drawRect(0, 0, 74, 12);
-        box.endFill();
-        this.parent.addChild(box)
+        this.box = new Graphics();
+        this.box.lineStyle(2, 0x333333, 10);
+        this.box.beginFill(0xfc6343, 1);
+        this.box.drawRect(0, 0, 74, 12);
+        this.box.endFill();
+        this.parent.addChild(this.box)
     }
     addHpProgress() {
         this.drawHp();
@@ -41,6 +62,14 @@ class Health {
         this.target.beginFill(0x3cbc0c, 1);
         this.target.drawRect(1, 1, 72 * (nowHp / maxHp), 10);
         this.target.endFill();
+    }
+    destroy() {
+        if (this.target.parent) {
+            this.target.parent.removeChild(this.target)
+        }
+        if (this.box.parent) {
+            this.box.parent.removeChild(this.box)
+        }
     }
 }
 

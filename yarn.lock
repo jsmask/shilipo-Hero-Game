@@ -319,6 +319,11 @@ braces@~3.0.2:
   dependencies:
     fill-range "^7.0.1"
 
+bump.js@^1.0.3:
+  version "1.0.3"
+  resolved "https://registry.yarnpkg.com/bump.js/-/bump.js-1.0.3.tgz#e0bd953d1ac46d60ab24610d7c632f92295cf8d4"
+  integrity sha1-4L2VPRrEbWCrJGENfGMvkilc+NQ=
+
 "chokidar@>=3.0.0 <4.0.0":
   version "3.5.3"
   resolved "https://registry.yarnpkg.com/chokidar/-/chokidar-3.5.3.tgz#1cf37c8707b932bd1af1ae22c0432e2acd1903bd"
@@ -503,6 +508,11 @@ glob-parent@~5.1.2:
   integrity sha512-AOIgSQCepiJYwP3ARnGx+5VnTu2HBYdzbGP45eLw1vr3zB3vZLeyed1sC9hnbcOc9/SrMyM5RPQrkGz4aS9Zow==
   dependencies:
     is-glob "^4.0.1"
+
+gsap@^3.10.0:
+  version "3.10.0"
+  resolved "https://registry.yarnpkg.com/gsap/-/gsap-3.10.0.tgz#0769b1f48dc5bd25c7a8b0748edb0349598c0eb6"
+  integrity sha512-WTefeoEYX3eepBBfrrVHfcf8n3lomM1jGgUlbRbWltrefgyo/btu3i9Ab18OVthjxDJnTSQSQ5pK5bDq3Uv/nw==
 
 has@^1.0.3:
   version "1.0.3"
