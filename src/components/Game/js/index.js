@@ -3,6 +3,7 @@ import assets from "./assets"
 import { setTextures, getTexturesAll } from "./textures"
 import Bus from "@/utils/bus"
 import MainScene from "./mainScene"
+import BeginScene from "./beginScene";
 
 export default class Game {
   constructor(options = {}) {
@@ -31,6 +32,9 @@ export default class Game {
     this.stage = this.app.stage;
     this.stage.sortableChildren = true;
     this.stage.interactive = true;
+
+    this.beginScene = new BeginScene(this)
+    this.stage.addChild(this.beginScene.stage)
 
     this.mainScene = new MainScene(this)
     this.stage.addChild(this.mainScene.stage)
@@ -65,7 +69,12 @@ export default class Game {
     this.update();
   }
   draw() {
+    this.beginScene.init().show();
     this.mainScene.init().show();
+    Bus.$on("startGame",()=>{
+      this.beginScene.init().hide();
+      this.mainScene.init().onStart()
+  })
   }
   update() {
     this.app.ticker.add((delta) => {

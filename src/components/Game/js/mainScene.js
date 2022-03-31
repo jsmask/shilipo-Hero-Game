@@ -30,7 +30,8 @@ export default class MainScene extends Scene {
         this.addUiContainer();
         this.uiContainer.visible = false;
         this.talk = new Talk({ stage: this.stage })
-        this.onStart();
+        this.addNpc()
+        //this.onStart();
         return this
     }
     update(delta) {
@@ -42,7 +43,7 @@ export default class MainScene extends Scene {
             }
             this.enemyList.forEach(enemy => {
                 enemy && enemy.move()
-                if (enemy.x >= this.stage.width - 100 || enemy.y >= this.stage.height) {
+                if (enemy.x >= this.stage.width - 50 || enemy.y >= this.stage.height) {
                     enemy.out();
                 }
             })
@@ -109,7 +110,6 @@ export default class MainScene extends Scene {
         return sprite;
     }
     async onStart() {
-        this.addNpc();
         await this.stageTalk();
         await this.beginGame()
     }
@@ -128,29 +128,29 @@ export default class MainScene extends Scene {
     }
     async stageTalk() {
         await this.talk.show({
-            name: "李逍遥",
+            name: "李逍遙",
             face: "hero_face_1",
-            content: `村子和十里坡逛个遍，怎么还没找到离开的办法啊~`
+            content: `村子和十裏坡逛個遍，怎麽還沒找到離開的辦法啊~`
         })
         await this.talk.show({
-            name: "酒剑仙",
+            name: "酒劍仙",
             face: "npc_face_0",
-            content: `小子，没找到出路不如在十里坡多练练武功，以后出去了也不至于吃亏嘛。`
+            content: `小子，沒找到出路不如在十裏坡多練練武功，以後出去了也不至于吃虧嘛。`
         })
         await this.talk.show({
-            name: "李逍遥",
+            name: "李逍遙",
             face: "hero_face_0",
-            content: `（老酒鬼言之有理），多谢前辈指教~`
+            content: `（那老酒鬼所說不無道理）多謝前輩指教~`
         })
         await this.talk.show({
-            name: "酒剑仙",
+            name: "酒劍仙",
             face: "npc_face_0",
-            content: `哝，妖怪要来了~`
+            content: `哝，妖怪要來了~`
         })
         await this.talk.show({
-            name: "李逍遥",
+            name: "李逍遙",
             face: "hero_face_2",
-            content: `咦！！！`
+            content: `哇！！！`
         })
     }
 }

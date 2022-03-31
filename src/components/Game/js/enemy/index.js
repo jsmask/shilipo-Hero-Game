@@ -23,8 +23,8 @@ const createEnemyData = () => {
         },
         green: {
             hp: 4,
-            speed: 1.62,
-            animationSpeed: .22,
+            speed: 1.12,
+            animationSpeed: .12,
         },
         black: {
             hp: 6,

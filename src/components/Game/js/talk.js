@@ -96,6 +96,11 @@ class Talk {
     drawRect() {
         const { width, height } = this.stage;
         this.rect = new Graphics()
+
+        this.rect.beginFill(0xFFFFFF, .01);
+        this.rect.drawRect(0, 0, width, height);
+        this.rect.endFill();
+
         this.rect.beginFill(0x6865cc, 0.5);
         this.rect.drawRect(0, height - 200, width, 180);
         this.rect.endFill();
