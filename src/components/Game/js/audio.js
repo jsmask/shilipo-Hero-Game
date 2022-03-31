@@ -6,7 +6,7 @@ let clickVoice = new Audio(assets["click"])
 
 export function playHit(){
     hitVoice.volume = .25
-    hitVoice.playbackRate = 1.5
+    hitVoice.playbackRate = 1.8
     hitVoice.currentTime = 0
     hitVoice.play()
 }
@@ -25,7 +25,7 @@ export function playBgm() {
 
 export function playClick(){
     clickVoice.volume = .2
-    clickVoice.loop = false;
+    hitVoice.currentTime = 0
     clickVoice.play()
 }
 

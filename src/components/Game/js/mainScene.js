@@ -37,7 +37,7 @@ export default class MainScene extends Scene {
         if (!this.stage.visible) return;
         if (this.isStartGame) {
             this.totalDelta += delta;
-            if (~~(this.totalDelta) % 90 == 0) {
+            if (~~(this.totalDelta) % 120 == 0) {
                 this.addEnemy();
             }
             this.enemyList.forEach(enemy => {
@@ -70,7 +70,7 @@ export default class MainScene extends Scene {
         let enemyTypes = ["jiuweng", "yong", "mifeng", "green", "black"]
         for (let i = 0; i < this.createEnemyNum; i++) {
             let enemy = createEnemy(enemyTypes[~~random(0, enemyTypes.length)], {
-                x: -random(20, 100),
+                x: -random(0, 20),
                 y: random(-120, 280),
                 posY:random(180, 540),
                 stage: this.stage

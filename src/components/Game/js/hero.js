@@ -24,7 +24,7 @@ class Hero {
         this.target = new Container();
         this.target.x = this.x;
         this.target.y = this.y;
-        this.target.zIndex = this.y + 60
+        this.target.zIndex = this.y + 30
         this.stage.addChild(this.target)
         this.normal();
 

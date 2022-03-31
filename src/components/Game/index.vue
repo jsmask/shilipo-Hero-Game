@@ -34,7 +34,7 @@ nextTick(() => {
 
 <style lang="scss" scoped>
 .game {
-  // transform: v-bind(scale);
+  transform: v-bind(scale);
   cursor: none;
 }
 </style>
