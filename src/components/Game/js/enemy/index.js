@@ -7,28 +7,28 @@ import Black from "./black"
 const createEnemyData = () => {
     return {
         yong: {
-            hp: 12,
+            hp: 10,
             speed: .88,
             animationSpeed: .1,
         },
         jiuweng: {
-            hp: 18,
+            hp: 9,
             speed: .82,
             animationSpeed: .075,
         },
         mifeng: {
             hp: 3,
-            speed: 1.8,
+            speed: 2.3,
             animationSpeed: .2,
         },
         green: {
             hp: 4,
-            speed: 1.02,
-            animationSpeed: .12,
+            speed: 1.62,
+            animationSpeed: .22,
         },
         black: {
-            hp: 10,
-            speed: 1.25,
+            hp: 6,
+            speed: 1.45,
             animationSpeed: .12,
         }
     }
