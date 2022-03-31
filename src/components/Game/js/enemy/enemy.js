@@ -19,6 +19,7 @@ const createDefaultOptions = () => {
         vx: 0,
         vy: 0,
         speed: 2,
+        posY:300
     }
 }
 
@@ -39,17 +40,19 @@ class Enemy {
         return this;
     }
     move() {
-        if (this.state === ENEMY_STATE.normal) {
-            this.x += this.vx * this.speed;
-            this.y += this.vy * this.speed;
-
+        if (this.state !== ENEMY_STATE.normal) return
+            let dx = this.stage.width - this.x;
+            let dy = this.posY - this.y;
+            let angle = Math.atan2(dy, dx);
+            this.x += Math.cos(angle) * this.speed;
+            this.y += Math.sin(angle) * this.speed;
+            this.target.zIndex = this.y;
             this.target.x = this.x;
             this.target.y = this.y;
-        }
     }
     addHealth() {
         this.health = new Health({
-            x: -10,
+            x: -1,
             y: -10,
             maxHp: this.hp,
             nowHp: this.hp,
@@ -60,7 +63,7 @@ class Enemy {
         // 行动
     }
     hunt(e) {
-        if (this.hp <= 0 || this.state === ENEMY_STATE.die) return;
+        if (this.hp <= 0 || this.state !== ENEMY_STATE.normal) return;
         if (!bump.hit(e.pos, this.target, true, true)) return;
         this.hp -= e.power;
         this.health.cut(this.hp)
@@ -92,6 +95,17 @@ class Enemy {
                 y: .04,
             }, "-=.8")
         this.dieAni.play()
+    }
+    out(){
+        if (this.state === ENEMY_STATE.out) return;
+        this.state = ENEMY_STATE.out
+        this.outAni = new TimelineMax({
+            onComplete: this.destroy.bind(this)
+        })
+        this.outAni.to(this.target, .6, {
+            alpha: 0,
+        })
+        this.outAni.play()
     }
     destroy() {
         this.state = ENEMY_STATE.destroy

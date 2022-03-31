@@ -1,11 +1,13 @@
 import { Text, Graphics, Container } from "pixi.js";
-import { createSprite, trottle } from "./tools"
+import { createSprite, random } from "./tools"
 import Bus from "@/utils/bus"
 import Scene from "./scene"
 import Hero from "./hero"
 import Npc from "./npc"
 import createEnemy from "./enemy";
-import {playBgm} from "./audio"
+import { playBgm, pauseBgm } from "./audio"
+import Talk from "./talk";
+import { ENEMY_STATE } from "./types";
 
 export default class MainScene extends Scene {
     constructor(game) {
@@ -14,20 +16,39 @@ export default class MainScene extends Scene {
         return this;
     }
     init() {
+        pauseBgm();
+        this.isStartGame = false;
+        this.isGameOver = false;
         this.enemyList.length = 0;
+        this.power = 1;
+        this.createEnemyNum = 1;
+        this.count = 0;
+        this.totalDelta = 0
         this.clear();
         this.addStageContainer();
         this.stageContainer.addChild(this.drawBgStage())
         this.addUiContainer();
-        this.addHero();
+        this.uiContainer.visible = false;
+        this.talk = new Talk({ stage: this.stage })
         this.onStart();
         return this
     }
     update(delta) {
         if (!this.stage.visible) return;
-        // this.enemyList.forEach(enemy => {
-        //     enemy && enemy.move()
-        // })
+        if (this.isStartGame) {
+            this.totalDelta += delta;
+            if (~~(this.totalDelta) % 90 == 0) {
+                this.addEnemy();
+            }
+            this.enemyList.forEach(enemy => {
+                enemy && enemy.move()
+                if (enemy.x >= this.stage.width - 100 || enemy.y >= this.stage.height) {
+                    enemy.out();
+                }
+            })
+            this.enemyList = this.enemyList.filter(e => e.state !== ENEMY_STATE.destroy)
+            
+        }
     }
     addUiContainer() {
         const { game } = this;
@@ -46,24 +67,16 @@ export default class MainScene extends Scene {
         this.stage.addChild(this.stageContainer);
     }
     addEnemy() {
-        let enemy_options = {
-            x: 150,
-            y: 140,
-            vx: -1,
-            vy: 1,
-            stage: this.stage
+        let enemyTypes = ["jiuweng", "yong", "mifeng", "green", "black"]
+        for (let i = 0; i < this.createEnemyNum; i++) {
+            let enemy = createEnemy(enemyTypes[~~random(0, enemyTypes.length)], {
+                x: -random(20, 100),
+                y: random(-120, 280),
+                posY:random(180, 540),
+                stage: this.stage
+            })
+            this.enemyList.push(enemy)
         }
-        let enemy_options1 = {
-            x: 100,
-            y: 190,
-            vx: -1,
-            vy: 1,
-            stage: this.stage
-        }
-        let enemy = createEnemy("jiuweng", enemy_options)
-        let enemy1 = createEnemy("yong", enemy_options1)
-        this.enemyList.push(enemy)
-        this.enemyList.push(enemy1)
         console.log(this.enemyList)
     }
     addHero() {
@@ -72,6 +85,14 @@ export default class MainScene extends Scene {
             y: 340,
             stage: this.stage
         });
+    }
+    addNpc() {
+        this.stage.removeChild(this.npc)
+        this.npc = new Npc({
+            x: 650,
+            y: 90,
+            stage: this.stage
+        })
     }
     drawBgStage() {
         const { game } = this;
@@ -88,22 +109,48 @@ export default class MainScene extends Scene {
         return sprite;
     }
     async onStart() {
+        this.addNpc();
+        await this.stageTalk();
         await this.beginGame()
-        playBgm();
-        this.addEnemy();
-        this.npc = new Npc({
-            x: 650,
-            y: 90,
-            stage: this.stage
-        })
     }
     async beginGame() {
+        this.isStartGame = true;
+        this.npc.out();
+        playBgm();
+        this.uiContainer.visible = true;
+        this.addHero();
         this.stage.on("pointerdown", e => {
             Bus.$emit("attack", {
-                power: 1,
+                power: this.power,
                 pos: e.data.global
             });
         })
-
+    }
+    async stageTalk() {
+        await this.talk.show({
+            name: "李逍遥",
+            face: "hero_face_1",
+            content: `村子和十里坡逛个遍，怎么还没找到离开的办法啊~`
+        })
+        await this.talk.show({
+            name: "酒剑仙",
+            face: "npc_face_0",
+            content: `小子，没找到出路不如在十里坡多练练武功，以后出去了也不至于吃亏嘛。`
+        })
+        await this.talk.show({
+            name: "李逍遥",
+            face: "hero_face_0",
+            content: `（老酒鬼言之有理），多谢前辈指教~`
+        })
+        await this.talk.show({
+            name: "酒剑仙",
+            face: "npc_face_0",
+            content: `哝，妖怪要来了~`
+        })
+        await this.talk.show({
+            name: "李逍遥",
+            face: "hero_face_2",
+            content: `咦！！！`
+        })
     }
 }

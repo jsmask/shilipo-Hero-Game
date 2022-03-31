@@ -26,7 +26,6 @@ export function createSprite({ name, x = 0, y = 0, scale = 1, width, height, zIn
 }
 
 export function getImageUrl(name, ext = "png") {
-    console.log(new URL(`/src/assets/${name}.${ext}`, import.meta.url))
     return new URL(`/src/assets/${name}.${ext}`, import.meta.url).href
 }
 

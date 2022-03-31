@@ -35,11 +35,12 @@ class Npc {
             drink_list.push(createSprite({ name: "npc_drink_" + i, anchor: 0 }).texture);
         }
         this.drinkAnimatedSprite = new AnimatedSprite(drink_list);
-        this.drinkAnimatedSprite.loop = false;
+        this.drinkAnimatedSprite.loop = true;
         this.drinkAnimatedSprite.animationSpeed = .1;
         this.drinkAnimatedSprite.gotoAndPlay(0);
         this.drinkAnimatedSprite.onComplete = () => {
-            this.out();
+            // this.out();
+            // this.drink();
         }
         this.target.addChild(this.drinkAnimatedSprite)
     }

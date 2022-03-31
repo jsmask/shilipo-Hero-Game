@@ -2,6 +2,7 @@ import assets from "./assets"
 let hitVoice = new Audio(assets["hit"])
 let attackVoice = new Audio(assets["attack"])
 let bgmVoice = new Audio(assets["bgm"])
+let clickVoice = new Audio(assets["click"])
 
 export function playHit(){
     hitVoice.volume = .25
@@ -16,10 +17,18 @@ export function playAttack(){
     attackVoice.play()
 }
 
-
-
 export function playBgm() {
     bgmVoice.volume = .2
     bgmVoice.loop = true;
     bgmVoice.play()
+}
+
+export function playClick(){
+    clickVoice.volume = .2
+    clickVoice.loop = false;
+    clickVoice.play()
+}
+
+export function pauseBgm() {
+    bgmVoice.pause()
 }

@@ -51,8 +51,8 @@ class Health {
         this.box = new Graphics();
         this.box.x = this.x;
         this.box.y = this.y
-        this.box.lineStyle(2, 0x333333, 10);
-        this.box.beginFill(0xfc6343, 1);
+        this.box.lineStyle(1, 0x333333, 1);
+        this.box.beginFill(0xfc6343, .36);
         this.box.drawRect(0, 0, 74, 12);
         this.box.endFill();
         this.parent.addChild(this.box)

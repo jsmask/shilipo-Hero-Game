@@ -4,16 +4,18 @@ import { HERO_STATE } from "./types"
 import Bus from "@/utils/bus"
 import {playAttack} from "./audio"
 
-const defaultOptions = {
-    x: 0,
-    y: 0,
-    target: new Container(),
-    stage: new Container()
+const createDefaultOptions = ()=> {
+    return {
+        x: 0,
+        y: 0,
+        target: new Container(),
+        stage: new Container()
+    }
 }
 
 class Hero {
     constructor(options) {
-        Object.assign(this, defaultOptions, options)
+        Object.assign(this, createDefaultOptions(), options)
         this.init();
         return this;
     }
@@ -22,6 +24,7 @@ class Hero {
         this.target = new Container();
         this.target.x = this.x;
         this.target.y = this.y;
+        this.target.zIndex = this.y
         this.stage.addChild(this.target)
         this.normal();
 
@@ -38,12 +41,12 @@ class Hero {
         playAttack();
         this.clearChildren();
         let attack_list = []
-        for (let i = 0; i < 3; i++) {
+        for (let i = 0; i < 2; i++) {
             attack_list.push(createSprite({ name: "hero_attack_" + i, anchor: 0 }).texture);
         }
         this.attackAnimatedSprite = new AnimatedSprite(attack_list);
         this.attackAnimatedSprite.loop = false;
-        this.attackAnimatedSprite.animationSpeed = .2;
+        this.attackAnimatedSprite.animationSpeed = .32;
         this.attackAnimatedSprite.gotoAndPlay(0);
         this.attackAnimatedSprite.onComplete = () => {
             this.normal()
