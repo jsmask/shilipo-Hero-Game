@@ -41,7 +41,7 @@ class Hero {
         playAttack();
         this.clearChildren();
         let attack_list = []
-        for (let i = 0; i < 2; i++) {
+        for (let i = 0; i < 3; i++) {
             attack_list.push(createSprite({ name: "hero_attack_" + i, anchor: 0 }).texture);
         }
         this.attackAnimatedSprite = new AnimatedSprite(attack_list);

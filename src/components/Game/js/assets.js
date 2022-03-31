@@ -9,7 +9,8 @@ const heroList = {
     hero_face_2: getHeroImageUrl("15-12"),
     hero_normal_0: getHeroImageUrl("207-1"),
     hero_attack_0: getHeroImageUrl("207-5"),
-    hero_attack_1: getHeroImageUrl("207-7"),
+    hero_attack_1: getHeroImageUrl("207-6"),
+    hero_attack_2: getHeroImageUrl("207-7"),
 }
 
 const enemyList0 = {
