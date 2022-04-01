@@ -15,7 +15,7 @@ const createDefalutOptions = () => {
         isGameOver: false,
         enemyList: [],
         power: 1,
-        createEnemyNum: 1,
+        createEnemyNum: 0,
         count: 0,
         score: 0,
         totalDelta: 0,
@@ -75,8 +75,9 @@ export default class MainScene extends Scene {
                 return this.endGame();
             }
             this.totalDelta += delta;
-            if (this.totalDelta % 15 * 60 == 0) {
+            if (Math.floor(this.totalDelta) % (15 * 60) == 0) {
                 this.createEnemyNum += 1;
+                console.log(this.createEnemyNum)
             }
             if (~~(this.totalDelta) % 90 == 0) {
                 this.addEnemy();
@@ -141,7 +142,7 @@ export default class MainScene extends Scene {
         let enemyTypes = ["jiuweng", "yong", "mifeng", "green", "black"]
         for (let i = 0; i < this.createEnemyNum; i++) {
             let enemy = createEnemy(enemyTypes[~~random(0, enemyTypes.length)], {
-                x: -random(0, 10),
+                x: -random(0, 20),
                 y: random(-50, 300),
                 posY: random(250, this.stage.height - 100),
                 stage: this.stage
