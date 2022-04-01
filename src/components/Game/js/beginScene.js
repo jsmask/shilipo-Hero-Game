@@ -33,14 +33,15 @@ export default class BeginScene extends Scene {
 
         this.btn.interactive = true;
         this.btn.buttonMode = true;
-        this.stage.on("pointerdown", e => {
-            playClick();
-            Bus.$emit("startGame")
-        })
+        this.stage.off("pointerdown",this.handleStart,this)
+        this.stage.on("pointerdown",this.handleStart,this)
 
         let btnAni = new TimelineMax().fromTo(this.btn, { alpha: 0 }, { alpha: 1, duration: .4, immediateRender: true, ease: "SteppedEase(1)" });
         btnAni.repeat(-1)
         btnAni.yoyo(true);
+    }
+    handleStart(){
+        Bus.$emit("startGame")
     }
     drawTitle() {
         const { width, height } = this.game;

@@ -8,28 +8,33 @@ const createEnemyData = () => {
     return {
         yong: {
             hp: 10,
-            speed: .88,
+            speed: .78,
             animationSpeed: .1,
+            score: 7,
         },
         jiuweng: {
             hp: 9,
-            speed: .82,
+            speed: 1.02,
             animationSpeed: .075,
+            score: 6
         },
         mifeng: {
             hp: 3,
-            speed: 2.3,
+            speed: 3.2,
             animationSpeed: .2,
+            score: 2
         },
         green: {
             hp: 4,
-            speed: 1.12,
+            speed: 1.82,
             animationSpeed: .12,
+            score: 2
         },
         black: {
             hp: 6,
-            speed: 1.45,
+            speed: 1.65,
             animationSpeed: .12,
+            score: 3
         }
     }
 }

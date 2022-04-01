@@ -3,6 +3,7 @@ let hitVoice = new Audio(assets["hit"])
 let attackVoice = new Audio(assets["attack"])
 let bgmVoice = new Audio(assets["bgm"])
 let clickVoice = new Audio(assets["click"])
+let successVoice = new Audio(assets["success"])
 
 export function playHit(){
     hitVoice.volume = .25
@@ -19,6 +20,7 @@ export function playAttack(){
 
 export function playBgm() {
     bgmVoice.volume = .2
+    bgmVoice.currentTime = 0
     bgmVoice.loop = true;
     bgmVoice.play()
 }
@@ -31,4 +33,14 @@ export function playClick(){
 
 export function pauseBgm() {
     bgmVoice.pause()
+}
+
+export function playSuccess() {
+    successVoice.volume = .2
+    hitVoice.currentTime = 0
+    successVoice.play()
+}
+
+export function pauseSuccess() {
+    successVoice.pause()
 }

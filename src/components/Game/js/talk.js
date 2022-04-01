@@ -27,13 +27,15 @@ class Talk {
         this.target.width = this.stage.width;
         this.target.height = this.stage.height;
         this.target.zIndex = 1000
-        this.target.on("pointerdown", e => {
-            playClick();
-            this.hide()
-            Bus.$emit("talk_next")
-        }) 
+        this.target.off("pointerdown", this.handleNext, this)
+        this.target.on("pointerdown", this.handleNext, this)
         this.stage.addChild(this.target)
         this.target.addChild(this.box);
+    }
+    handleNext(e) {
+        playClick();
+        this.hide()
+        Bus.$emit("talk_next")
     }
     show({ name, face, content }) {
         this.clearChildren();
@@ -52,7 +54,7 @@ class Talk {
         this.drawFace(face)
         this.drawContent(content)
     }
-    drawFace(name){
+    drawFace(name) {
         const { width, height } = this.stage;
         this.faceSprite = createSprite({ name, anchor: 0 })
         this.faceSprite.x = width - this.faceSprite.width - 15
@@ -76,7 +78,7 @@ class Talk {
         let contentList = content.split("")
         content.split("").forEach((char, index) => {
             if (index % 24 == 0 && index != 0) {
-                contentList.splice(index-1, 0, "\n")
+                contentList.splice(index - 1, 0, "\n")
             }
         })
         this.contentText = new Text(contentList.join(""), {
@@ -84,7 +86,7 @@ class Talk {
             fill: '#FFFFFF',
             stroke: '#FFFFFF',
             lineJoin: 'round',
-            lineHeight:28,
+            lineHeight: 28,
         })
         this.contentText.x = 20;
         this.contentText.y = height - 145;

@@ -1,7 +1,10 @@
 import { getImageUrl, getEnemyImageUrl, getHeroImageUrl, getNpcImageUrl, getStageImageUrl, getOtherImageUrl, getAudioUrl } from "./tools"
 
 const title = getImageUrl("title");
+const result = getImageUrl("result");
 const stage = getStageImageUrl("s0", "jpg");
+const guo = getOtherImageUrl("492-1")
+const jiu = getOtherImageUrl("492-3")
 
 const heroList = {
     hero_face_0: getHeroImageUrl("15-4"),
@@ -64,7 +67,10 @@ let audioList = {
 
 export default {
     title,
+    result,
     stage,
+    guo,
+    jiu,
     ...audioList,
     ...heroList,
     ...npcList,

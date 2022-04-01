@@ -9,21 +9,37 @@ import { playBgm, pauseBgm } from "./audio"
 import Talk from "./talk";
 import { ENEMY_STATE } from "./types";
 
+const createDefalutOptions = () => {
+    return {
+        isStartGame: false,
+        isGameOver: false,
+        enemyList: [],
+        power: 1,
+        createEnemyNum: 1,
+        count: 0,
+        score: 0,
+        totalDelta: 0,
+        time: 10 * 60 + 30,
+        countTxt: null,
+        timeTxt: null,
+        stageContainer: null,
+        uiContainer: null
+    }
+}
+
 export default class MainScene extends Scene {
     constructor(game) {
         super(game)
-        this.enemyList = []
         return this;
     }
     init() {
         pauseBgm();
-        this.isStartGame = false;
-        this.isGameOver = false;
-        this.enemyList.length = 0;
-        this.power = 1;
-        this.createEnemyNum = 1;
-        this.count = 0;
-        this.totalDelta = 0
+        const options = createDefalutOptions();
+        for (const key in options) {
+            if (options.hasOwnProperty(key)) {
+                this[key] = options[key];
+            }
+        }
         this.clear();
         this.addStageContainer();
         this.stageContainer.addChild(this.drawBgStage())
@@ -31,14 +47,38 @@ export default class MainScene extends Scene {
         this.uiContainer.visible = false;
         this.talk = new Talk({ stage: this.stage })
         this.addNpc()
-        //this.onStart();
         return this
+    }
+    endGame() {
+        this.time = 0;
+        this.isGameOver = true;
+        this.uiContainer.visible = false;
+        pauseBgm();
+        this.stage.off("pointerdown", this.handleAttack, this)
+        Bus.$off("addCount")
+        Bus.$off("attack")
+        this.enemyList.forEach(e => {
+            e && e.out();
+        })
+        Bus.$emit("gameover", {
+            score: this.score,
+            count: this.count,
+        })
     }
     update(delta) {
         if (!this.stage.visible) return;
-        if (this.isStartGame) {
+        if (this.isStartGame && !this.isGameOver) {
+            this.time -= delta
+            this.drawTimeTxt()
+            this.drawCountTxt();
+            if (this.time < 0) {
+                return this.endGame();
+            }
             this.totalDelta += delta;
-            if (~~(this.totalDelta) % 120 == 0) {
+            if (this.totalDelta % 15 * 60 == 0) {
+                this.createEnemyNum += 1;
+            }
+            if (~~(this.totalDelta) % 90 == 0) {
                 this.addEnemy();
             }
             this.enemyList.forEach(enemy => {
@@ -48,14 +88,44 @@ export default class MainScene extends Scene {
                 }
             })
             this.enemyList = this.enemyList.filter(e => e.state !== ENEMY_STATE.destroy)
-            
         }
+    }
+    showUi() {
+        this.uiContainer.removeChildren(0, this.uiContainer.length)
+        this.uiContainer.visible = true;
+        this.drawTimeTxt();
+        this.drawCountTxt();
+    }
+    drawCountTxt() {
+        if (this.countTxt) return this.countTxt.text = "击杀:" + this.count;
+        this.countTxt = new Text("击杀:" + this.count, {
+            fontSize: 24,
+            fill: ['#ffffff', '#ff3443'],
+            align: 'left',
+        })
+        this.countTxt.x = 30;
+        this.countTxt.y = 560;
+        this.countTxt.anchor.set(0, 0.5)
+        this.uiContainer.addChild(this.countTxt)
+    }
+    drawTimeTxt() {
+        if (this.timeTxt) return this.timeTxt.text = ~~(this.time / 60);
+        this.timeTxt = new Text(~~(this.time / 60), {
+            fontSize: 36,
+            fill: ['#ffffff', '#ffc000'],
+            align: 'center',
+        })
+        this.timeTxt.x = this.stage.width / 2;
+        this.timeTxt.y = 30;
+        this.timeTxt.anchor.set(0.5, 0.5)
+        this.uiContainer.addChild(this.timeTxt)
     }
     addUiContainer() {
         const { game } = this;
         this.uiContainer = new Container();
         this.uiContainer.width = game.width;
         this.uiContainer.height = game.height;
+        this.uiContainer.zIndex = 999;
         this.stage.addChild(this.uiContainer);
     }
     addStageContainer() {
@@ -71,14 +141,13 @@ export default class MainScene extends Scene {
         let enemyTypes = ["jiuweng", "yong", "mifeng", "green", "black"]
         for (let i = 0; i < this.createEnemyNum; i++) {
             let enemy = createEnemy(enemyTypes[~~random(0, enemyTypes.length)], {
-                x: -random(0, 20),
-                y: random(-120, 280),
-                posY:random(180, 540),
+                x: -random(0, 10),
+                y: random(-50, 300),
+                posY: random(250, this.stage.height - 100),
                 stage: this.stage
             })
             this.enemyList.push(enemy)
         }
-        console.log(this.enemyList)
     }
     addHero() {
         this.hero = new Hero({
@@ -88,6 +157,7 @@ export default class MainScene extends Scene {
         });
     }
     addNpc() {
+        this.npc = null
         this.stage.removeChild(this.npc)
         this.npc = new Npc({
             x: 650,
@@ -117,14 +187,23 @@ export default class MainScene extends Scene {
         this.isStartGame = true;
         this.npc.out();
         playBgm();
-        this.uiContainer.visible = true;
+        Bus.$off("addCount")
+        Bus.$off("attack")
+        Bus.$on("addCount", this.addCount.bind(this))
+        this.stage.off("pointerdown", this.handleAttack, this)
+        this.stage.on("pointerdown", this.handleAttack, this)
+        this.showUi();
         this.addHero();
-        this.stage.on("pointerdown", e => {
-            Bus.$emit("attack", {
-                power: this.power,
-                pos: e.data.global
-            });
-        })
+    }
+    addCount(obj) {
+        this.score += obj.score;
+        this.count += 1;
+    }
+    handleAttack(e) {
+        Bus.$emit("attack", {
+            power: this.power,
+            pos: e.data.global
+        });
     }
     async stageTalk() {
         await this.talk.show({

@@ -74,6 +74,7 @@ class Enemy {
     }
     die() {
         if (this.state === ENEMY_STATE.die) return;
+        Bus.$emit("addCount",this)
         this.state = ENEMY_STATE.die;
         this.animatedSprite.stop()
         this.health.destroy()

@@ -27,7 +27,6 @@ class Hero {
         this.target.zIndex = this.y + 30
         this.stage.addChild(this.target)
         this.normal();
-
         Bus.$on("attack", this.attack.bind(this));
     }
     normal() {

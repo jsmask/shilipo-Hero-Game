@@ -4,6 +4,7 @@ import { setTextures, getTexturesAll } from "./textures"
 import Bus from "@/utils/bus"
 import MainScene from "./mainScene"
 import BeginScene from "./beginScene";
+import EndScene from "./endScene";
 
 export default class Game {
   constructor(options = {}) {
@@ -39,6 +40,9 @@ export default class Game {
     this.mainScene = new MainScene(this)
     this.stage.addChild(this.mainScene.stage)
 
+    this.endScene = new EndScene(this)
+    this.stage.addChild(this.endScene.stage)
+
     this.loader = new Loader();
 
     this.loaderTextures().then(res => {
@@ -67,14 +71,25 @@ export default class Game {
   render() {
     this.draw();
     this.update();
+    Bus.$on("gameover", e => {
+      this.endScene.init(e).show();
+    })
+    Bus.$on("reset", () => {
+      this.beginScene.show();
+      this.mainScene.init().show();
+    })
+    Bus.$on("restart", () => {
+      this.mainScene.init().beginGame()
+    })
+    Bus.$on("startGame", () => {
+      this.beginScene.init().hide();
+      this.mainScene.init().onStart()
+    })
   }
   draw() {
     this.beginScene.init().show();
     this.mainScene.init().show();
-    Bus.$on("startGame",()=>{
-      this.beginScene.init().hide();
-      this.mainScene.init().onStart()
-  })
+    // this.endScene.init().show();
   }
   update() {
     this.app.ticker.add((delta) => {
