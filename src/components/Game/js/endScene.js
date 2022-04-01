@@ -39,7 +39,7 @@ export default class EndScene extends Scene {
             fill: 0xFFcc00,
             align: 'center',
         })
-        let txt2 = new Text("最终得分：" + (this.score + "").padStart(4, 0), {
+        let txt2 = new Text("获得经验：" + (this.score + "").padStart(4, 0), {
             fontSize: 28,
             fill: 0xFFcc00,
             align: 'center',

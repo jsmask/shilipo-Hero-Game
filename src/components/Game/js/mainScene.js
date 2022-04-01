@@ -15,7 +15,7 @@ const createDefalutOptions = () => {
         isGameOver: false,
         enemyList: [],
         power: 1,
-        createEnemyNum: 0,
+        createEnemyNum: 1,
         count: 0,
         score: 0,
         totalDelta: 0,
@@ -71,15 +71,15 @@ export default class MainScene extends Scene {
             this.time -= delta
             this.drawTimeTxt()
             this.drawCountTxt();
-            if (this.time < 0) {
+            if (this.time <= 0) {
                 return this.endGame();
             }
             this.totalDelta += delta;
-            if (Math.floor(this.totalDelta) % (15 * 60) == 0) {
+            let t = Math.floor(this.totalDelta)
+            if (t % (20 * 60) == 0 && t != 0) {
                 this.createEnemyNum += 1;
-                console.log(this.createEnemyNum)
             }
-            if (~~(this.totalDelta) % 90 == 0) {
+            if (t % 90 == 0) {
                 this.addEnemy();
             }
             this.enemyList.forEach(enemy => {
@@ -143,10 +143,11 @@ export default class MainScene extends Scene {
         for (let i = 0; i < this.createEnemyNum; i++) {
             let enemy = createEnemy(enemyTypes[~~random(0, enemyTypes.length)], {
                 x: -random(0, 30),
-                y: random(-50, 300),
-                posY: random(250, this.stage.height - 100),
+                y: random(-100, 270),
+                posY: random(300, this.stage.height),
                 stage: this.stage
             })
+            console.log(enemy)
             this.enemyList.push(enemy)
         }
     }
