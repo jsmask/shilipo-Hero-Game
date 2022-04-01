@@ -142,7 +142,7 @@ export default class MainScene extends Scene {
         let enemyTypes = ["jiuweng", "yong", "mifeng", "green", "black"]
         for (let i = 0; i < this.createEnemyNum; i++) {
             let enemy = createEnemy(enemyTypes[~~random(0, enemyTypes.length)], {
-                x: -random(0, 20),
+                x: -random(0, 30),
                 y: random(-50, 300),
                 posY: random(250, this.stage.height - 100),
                 stage: this.stage
