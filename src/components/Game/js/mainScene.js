@@ -19,7 +19,7 @@ const createDefalutOptions = () => {
         count: 0,
         score: 0,
         totalDelta: 0,
-        time: 10 * 60 + 30,
+        time: 60 * 60 + 40,
         countTxt: null,
         timeTxt: null,
         stageContainer: null,
