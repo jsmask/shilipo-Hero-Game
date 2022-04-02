@@ -10,6 +10,7 @@ import Talk from "./talk";
 import { ENEMY_STATE } from "./types";
 import talkData from "./talkData"
 import Item from "./item"
+import { TimelineMax } from "gsap"
 
 const createDefalutOptions = () => {
     return {
@@ -48,7 +49,7 @@ export default class MainScene extends Scene {
         }
         this.clear();
         this.addStageContainer();
-        this.stageContainer.addChild(this.drawBgStage())
+        this.drawBgStage()
         this.addUiContainer();
         this.uiContainer.visible = false;
         this.talk = new Talk({ stage: this.stage })
@@ -84,7 +85,7 @@ export default class MainScene extends Scene {
             }
             this.totalDelta += delta;
             let t = Math.floor(this.totalDelta)
-            if (t % (20 * 60) == 0 && t != 0) {
+            if (t % (30 * 60) == 0 && t != 0) {
                 this.createEnemyNum += 1;
             }
             if (t % 90 == 0) {
@@ -113,9 +114,9 @@ export default class MainScene extends Scene {
             fill: ['#ffffff', '#ff3443'],
             align: 'left',
         })
-        this.countTxt.x = 30;
+        this.countTxt.x = 80;
         this.countTxt.y = 560;
-        this.countTxt.anchor.set(0, 0.5)
+        this.countTxt.anchor.set(0.5, 0.5)
         this.uiContainer.addChild(this.countTxt)
     }
     drawTimeTxt() {
@@ -183,9 +184,9 @@ export default class MainScene extends Scene {
         let enemyTypes = ["jiuweng", "yong", "mifeng", "green", "black"]
         for (let i = 0; i < this.createEnemyNum; i++) {
             let enemy = createEnemy(enemyTypes[~~random(0, enemyTypes.length)], {
-                x: -random(0, 30),
-                y: random(-100, 270),
-                posY: random(300, this.stage.height),
+                x: -random(20, 60),
+                y: random(-50, 270),
+                posY: random(320, this.stage.height),
                 stage: this.stageContainer
             })
             this.enemyList.push(enemy)
@@ -200,7 +201,7 @@ export default class MainScene extends Scene {
     }
     addNpc() {
         this.npc = null
-        this.stage.removeChild(this.npc)
+        this.stageContainer.removeChild(this.npc)
         this.npc = new Npc({
             x: 650,
             y: 90,
@@ -218,8 +219,7 @@ export default class MainScene extends Scene {
             y: 0,
             anchor: 0
         })
-        sprite.zIndex = 9
-        return sprite;
+        this.stageContainer.addChild(sprite)
     }
     async onStart() {
         await this.stageTalk();
@@ -240,27 +240,28 @@ export default class MainScene extends Scene {
         this.addHero();
     }
     handleBuff(obj) {
-        switch (obj.type) {
-            case 0:
-                this.time += 20;
-                this.score += 10;
-                break;
-            case 1:
-                this.time += 30
-                this.power += 1;
-                this.score += 20;
-                break;
-            case 2:
-                this.power += 2
-                this.score += 15;
-                break;
-            default:
-                break;
-        }
-        this.stageContainer.removeChild(obj.target);
-        obj = null;
+        let ani = new TimelineMax({
+            onComplete: () => {
+                ani.kill()
+                this.stageContainer.removeChild(obj.target);
+            }
+        })
+            .to(this.powerTxt.scale, .12, { x: 1.2, y: 1.2 })
+            .to(this.powerTxt.scale, .12, { x: 1, y: 1 })
+        const { time, score, power } = obj.data
+        this.time += time;
+        this.score += score;
+        this.power += power;
     }
     addCount(obj) {
+        let ani = new TimelineMax({
+            onComplete: () => {
+                ani.kill()
+                ani = null;
+            }
+        })
+            .to(this.countTxt.scale, .1, { x: 1.2, y: 1.2 })
+            .to(this.countTxt.scale, .1, { x: 1, y: 1 })
         if (random(0, 100) < obj.chance) {
             new Item({
                 x: obj.x,

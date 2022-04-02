@@ -12,7 +12,7 @@ const createEnemyData = () => {
             animationSpeed: .1,
             score: 7,
             itemType: 1,
-            chance: 50
+            chance: 35
         },
         jiuweng: {
             hp: 93,
@@ -20,7 +20,7 @@ const createEnemyData = () => {
             animationSpeed: .075,
             score: 6,
             itemType: 2,
-            chance: 50
+            chance: 45
         },
         mifeng: {
             hp: 27,
@@ -28,7 +28,7 @@ const createEnemyData = () => {
             animationSpeed: .2,
             score: 4,
             itemType: 0,
-            chance: 25
+            chance: 20
         },
         green: {
             hp: 36,
@@ -36,15 +36,15 @@ const createEnemyData = () => {
             animationSpeed: .12,
             score: 4,
             itemType: 0,
-            chance: 25
+            chance: 15
         },
         black: {
             hp: 66,
             speed: 1.65,
             animationSpeed: .12,
             score: 5,
-            itemType: 2,
-            chance: 30
+            itemType: 1,
+            chance: 15
         }
     }
 }

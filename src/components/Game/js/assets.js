@@ -62,7 +62,7 @@ let audioList = {
     bgm: getAudioUrl("bgm"),
     click: getAudioUrl("click"),
     success: getAudioUrl("success"),
-    open: getAudioUrl("open"),
+    // open: getAudioUrl("open"),
     attack: getAudioUrl("attack"),
 }
 

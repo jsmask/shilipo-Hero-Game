@@ -32,8 +32,12 @@ class Item {
         this.play();
     }
     draw() {
-        let data = [{ name: "guo", text: "鼠儿果" }, { name: "cao", text: "龙涎草" }, { name: "jiu", text: "烧酒" }][this.type || 0]
-        this.text = data.text;
+        let data = [
+            { name: "guo", text: "鼠儿果", time: 20, power: 0, score: 5 },
+            { name: "cao", text: "龙涎草", time: 40, power: 1, score: 10 },
+            { name: "jiu", text: "烧酒", time: 5, power: 2, score: 8 }
+        ][this.type || 0];
+        this.data = data;
         let sprite = createSprite({
             name: data.name,
             anchor: 0.5,
@@ -44,7 +48,6 @@ class Item {
         let ani = new TimelineMax({
             onComplete: () => {
                 this.state = ITEM_STATE.use;
-                Bus.$emit("addBuff", this)
                 ani.kill()
                 this.clearChildren();
             }
@@ -58,7 +61,10 @@ class Item {
             .to(this.target, .5, {
                 alpha: .5,
                 x: this.hero.x + 80,
-                y: this.hero.y + 50
+                y: this.hero.y + 50,
+                onComplete: () => {
+                    Bus.$emit("addBuff", this)
+                }
             }, "+=.2")
             .to(this.target, .5, {
                 alpha: 0,
