@@ -38,10 +38,11 @@ class Talk {
         Bus.$emit("talk_next")
     }
     show({ name, face, content }) {
-        this.clearChildren();
-        this.drawInfo({ name, face, content });
-        this.target.visible = true;
+        this.target.visible = false;
         return new Promise((resolve, reject) => {
+            this.clearChildren();
+            this.drawInfo({ name, face, content });
+            this.target.visible = true;
             Bus.$on("talk_next", () => {
                 Bus.$off("talk_next")
                 resolve()

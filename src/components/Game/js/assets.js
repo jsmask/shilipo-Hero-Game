@@ -4,6 +4,7 @@ const title = getImageUrl("title");
 const result = getImageUrl("result");
 const stage = getStageImageUrl("s0", "jpg");
 const guo = getOtherImageUrl("492-1")
+const cao = getOtherImageUrl("492-2")
 const jiu = getOtherImageUrl("492-3")
 
 const heroList = {
@@ -70,6 +71,7 @@ export default {
     result,
     stage,
     guo,
+    cao,
     jiu,
     ...audioList,
     ...heroList,

@@ -87,9 +87,12 @@ export default class Game {
     })
   }
   draw() {
-    this.beginScene.init().show();
-    this.mainScene.init().show();
+    // this.beginScene.init().show();
+    // this.mainScene.init().show();
+
     // this.endScene.init().show();
+
+    this.mainScene.init().beginGame()
   }
   update() {
     this.app.ticker.add((delta) => {

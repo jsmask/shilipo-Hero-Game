@@ -5,3 +5,5 @@ export const ENEMY_STATE = { normal: "normal", die: "die", out: "out", destroy: 
 
 
 export const NPC_STATE = { normal: "normal", out: "out" }
+
+export const ITEM_STATE = { normal: "normal", use: "use" }

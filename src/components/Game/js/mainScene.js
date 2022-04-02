@@ -8,20 +8,26 @@ import createEnemy from "./enemy";
 import { playBgm, pauseBgm } from "./audio"
 import Talk from "./talk";
 import { ENEMY_STATE } from "./types";
+import talkData from "./talkData"
+import Item from "./item"
 
 const createDefalutOptions = () => {
     return {
         isStartGame: false,
         isGameOver: false,
         enemyList: [],
-        power: 1,
+        power: 10,
         createEnemyNum: 1,
         count: 0,
         score: 0,
         totalDelta: 0,
+        maxTime: 60 * 60,
         time: 60 * 60 + 40,
         countTxt: null,
         timeTxt: null,
+        timeBox: null,
+        timeRect: null,
+        powerTxt: null,
         stageContainer: null,
         uiContainer: null
     }
@@ -57,6 +63,7 @@ export default class MainScene extends Scene {
         this.stage.off("pointerdown", this.handleAttack, this)
         Bus.$off("addCount")
         Bus.$off("attack")
+        Bus.$off("addBuff")
         this.enemyList.forEach(e => {
             e && e.out();
         })
@@ -71,6 +78,7 @@ export default class MainScene extends Scene {
             this.time -= delta
             this.drawTimeTxt()
             this.drawCountTxt();
+            this.drawPowerTxt();
             if (this.time <= 0) {
                 return this.endGame();
             }
@@ -96,10 +104,11 @@ export default class MainScene extends Scene {
         this.uiContainer.visible = true;
         this.drawTimeTxt();
         this.drawCountTxt();
+        this.drawPowerTxt()
     }
     drawCountTxt() {
-        if (this.countTxt) return this.countTxt.text = "击杀:" + this.count;
-        this.countTxt = new Text("击杀:" + this.count, {
+        if (this.countTxt) return this.countTxt.text = "擊殺：" + this.count;
+        this.countTxt = new Text("擊殺:" + this.count, {
             fontSize: 24,
             fill: ['#ffffff', '#ff3443'],
             align: 'left',
@@ -110,16 +119,48 @@ export default class MainScene extends Scene {
         this.uiContainer.addChild(this.countTxt)
     }
     drawTimeTxt() {
-        if (this.timeTxt) return this.timeTxt.text = ~~(this.time / 60);
-        this.timeTxt = new Text(~~(this.time / 60), {
-            fontSize: 36,
+        let progress = Math.min(1, this.time / this.maxTime);
+        if (this.timeBox) return this.timeRect.width = 300 * progress
+        this.timeBox = new Container()
+        let rect = new Graphics();
+        rect.x = 490;
+        rect.y = 10
+        rect.lineStyle(1, 0x333333, 1);
+        rect.beginFill(0xffffff, .36);
+        rect.drawRect(0, 0, 300, 20);
+        rect.endFill();
+
+        let txt = new Text("時間：", {
+            fontSize: 24,
             fill: ['#ffffff', '#ffc000'],
             align: 'center',
         })
-        this.timeTxt.x = this.stage.width / 2;
-        this.timeTxt.y = 30;
-        this.timeTxt.anchor.set(0.5, 0.5)
-        this.uiContainer.addChild(this.timeTxt)
+        txt.x = 426;
+        txt.y = 7;
+
+        this.timeRect = new Graphics()
+        this.timeRect.x = 490;
+        this.timeRect.y = 10
+        this.timeRect.beginFill(0xffc000, .6);
+        this.timeRect.drawRect(0, 0, 300, 20);
+        this.timeRect.endFill();
+
+        this.timeBox.addChild(rect)
+        this.timeBox.addChild(txt)
+        this.timeBox.addChild(this.timeRect)
+        this.uiContainer.addChild(this.timeBox)
+    }
+    drawPowerTxt() {
+        if (this.powerTxt) return this.powerTxt.text = "武術：" + this.power
+        this.powerTxt = new Text("武術：" + this.power, {
+            fontSize: 24,
+            fill: ['#ffffff', '#ffc000'],
+            align: 'right',
+        })
+        this.powerTxt.x = 720;
+        this.powerTxt.y = 560;
+        this.powerTxt.anchor.set(0.5, 0.5)
+        this.uiContainer.addChild(this.powerTxt)
     }
     addUiContainer() {
         const { game } = this;
@@ -145,9 +186,8 @@ export default class MainScene extends Scene {
                 x: -random(0, 30),
                 y: random(-100, 270),
                 posY: random(300, this.stage.height),
-                stage: this.stage
+                stage: this.stageContainer
             })
-            console.log(enemy)
             this.enemyList.push(enemy)
         }
     }
@@ -155,7 +195,7 @@ export default class MainScene extends Scene {
         this.hero = new Hero({
             x: 600,
             y: 340,
-            stage: this.stage
+            stage: this.stageContainer
         });
     }
     addNpc() {
@@ -164,7 +204,7 @@ export default class MainScene extends Scene {
         this.npc = new Npc({
             x: 650,
             y: 90,
-            stage: this.stage
+            stage: this.stageContainer
         })
     }
     drawBgStage() {
@@ -191,13 +231,45 @@ export default class MainScene extends Scene {
         playBgm();
         Bus.$off("addCount")
         Bus.$off("attack")
+        Bus.$off("addBuff")
         Bus.$on("addCount", this.addCount.bind(this))
+        Bus.$on("addBuff", this.handleBuff.bind(this))
         this.stage.off("pointerdown", this.handleAttack, this)
         this.stage.on("pointerdown", this.handleAttack, this)
         this.showUi();
         this.addHero();
     }
+    handleBuff(obj) {
+        switch (obj.type) {
+            case 0:
+                this.time += 20;
+                this.score += 10;
+                break;
+            case 1:
+                this.time += 30
+                this.power += 1;
+                this.score += 20;
+                break;
+            case 2:
+                this.power += 2
+                this.score += 15;
+                break;
+            default:
+                break;
+        }
+        this.stageContainer.removeChild(obj.target);
+        obj = null;
+    }
     addCount(obj) {
+        if (random(0, 100) < obj.chance) {
+            new Item({
+                x: obj.x,
+                y: obj.y,
+                stage: this.stageContainer,
+                hero: this.hero,
+                type: obj.itemType
+            })
+        }
         this.score += obj.score;
         this.count += 1;
     }
@@ -208,30 +280,10 @@ export default class MainScene extends Scene {
         });
     }
     async stageTalk() {
-        await this.talk.show({
-            name: "李逍遙",
-            face: "hero_face_1",
-            content: `村子和十裏坡逛個遍，怎麽還沒找到離開的辦法啊~`
-        })
-        await this.talk.show({
-            name: "酒劍仙",
-            face: "npc_face_0",
-            content: `小子，沒找到出路不如在十裏坡多練練武功，以後出去了也不至于吃虧嘛。`
-        })
-        await this.talk.show({
-            name: "李逍遙",
-            face: "hero_face_0",
-            content: `（那老酒鬼所說不無道理）多謝前輩指教~`
-        })
-        await this.talk.show({
-            name: "酒劍仙",
-            face: "npc_face_0",
-            content: `哝，妖怪要來了~`
-        })
-        await this.talk.show({
-            name: "李逍遙",
-            face: "hero_face_2",
-            content: `哇！！！`
-        })
+        await this.talk.show(talkData[0])
+        await this.talk.show(talkData[1])
+        await this.talk.show(talkData[2])
+        await this.talk.show(talkData[3])
+        await this.talk.show(talkData[4])
     }
 }

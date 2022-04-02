@@ -2,7 +2,7 @@ import { Text, Graphics, Container } from "pixi.js";
 import { createSprite, trottle } from "./tools"
 import Bus from "@/utils/bus"
 import Scene from "./scene"
-import {TimelineMax} from "gsap"
+import { TimelineMax } from "gsap"
 import { playClick } from "./audio"
 
 export default class BeginScene extends Scene {
@@ -33,28 +33,28 @@ export default class BeginScene extends Scene {
 
         this.btn.interactive = true;
         this.btn.buttonMode = true;
-        this.stage.off("pointerdown",this.handleStart,this)
-        this.stage.on("pointerdown",this.handleStart,this)
+        this.stage.off("pointerdown", this.handleStart, this)
+        this.stage.on("pointerdown", this.handleStart, this)
 
         let btnAni = new TimelineMax().fromTo(this.btn, { alpha: 0 }, { alpha: 1, duration: .4, immediateRender: true, ease: "SteppedEase(1)" });
         btnAni.repeat(-1)
         btnAni.yoyo(true);
     }
-    handleStart(){
+    handleStart() {
         Bus.$emit("startGame")
     }
     drawTitle() {
         const { width, height } = this.game;
         let sprite = createSprite({
             name: "title",
-            x: width/2,
+            x: width / 2,
             y: 136,
             anchor: 0.5
         })
         sprite.zIndex = 12
         return sprite;
     }
-    drawBlackRect(){
+    drawBlackRect() {
         const { width, height } = this.game;
         let rect = new Graphics()
         rect.beginFill(0x000000, .55);
