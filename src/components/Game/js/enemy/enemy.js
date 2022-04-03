@@ -4,7 +4,7 @@ import Bus from "@/utils/bus"
 import Health from "./health";
 import { TimelineMax } from "gsap"
 import { ENEMY_STATE } from "../types"
-import {playHit} from "../audio"
+import { playHit } from "../audio"
 
 const createDefaultOptions = () => {
     return {
@@ -19,7 +19,7 @@ const createDefaultOptions = () => {
         vx: 0,
         vy: 0,
         speed: 2,
-        posY:300
+        posY: 300
     }
 }
 
@@ -41,14 +41,14 @@ class Enemy {
     }
     move() {
         if (this.state !== ENEMY_STATE.normal) return
-            let dx = this.stage.width - this.x;
-            let dy = this.posY - this.y;
-            let angle = Math.atan2(dy, dx);
-            this.x += Math.cos(angle) * this.speed;
-            this.y += Math.sin(angle) * this.speed;
-            this.target.zIndex = this.y;
-            this.target.x = this.x;
-            this.target.y = this.y;
+        let dx = this.stage.width - this.x;
+        let dy = this.posY - this.y;
+        let angle = Math.atan2(dy, dx);
+        this.x += Math.cos(angle) * this.speed;
+        this.y += Math.sin(angle) * this.speed;
+        this.target.zIndex = this.y;
+        this.target.x = this.x;
+        this.target.y = this.y;
     }
     addHealth() {
         this.health = new Health({
@@ -74,10 +74,17 @@ class Enemy {
     }
     die() {
         if (this.state === ENEMY_STATE.die) return;
-        Bus.$emit("addCount",this)
         this.state = ENEMY_STATE.die;
+        Bus.$emit("addCount", {
+            ...this,
+            diePos:{
+                x: this.target.x,
+                y: this.target.y
+            }
+        })
         this.animatedSprite.stop()
         this.health.destroy()
+
 
         this.dieAni = new TimelineMax({
             onComplete: this.destroy.bind(this)
@@ -92,12 +99,12 @@ class Enemy {
             y: 1.3,
         }, "-=.6")
             .to(this.target.skew, .2, {
-                x: .02,
-                y: .04,
+                x: .05,
+                y: .08,
             }, "-=.8")
         this.dieAni.play()
     }
-    out(){
+    out() {
         if (this.state === ENEMY_STATE.out) return;
         this.state = ENEMY_STATE.out
         this.outAni = new TimelineMax({

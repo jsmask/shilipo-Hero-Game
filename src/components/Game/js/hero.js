@@ -34,6 +34,18 @@ class Hero {
         this.clearChildren();
         this.target.addChild(createSprite({ name: "hero_normal_0", anchor: 0 }))
     }
+    wait(){
+        this.clearChildren();
+        let wait_list = [];
+        for (let i = 0; i < 2; i++) {
+            wait_list.push(createSprite({ name: "hero_wait_" + i, anchor: 0 }).texture);
+        }
+        this.attackAnimatedSprite = new AnimatedSprite(wait_list);
+        this.attackAnimatedSprite.loop = true;
+        this.attackAnimatedSprite.animationSpeed = .12;
+        this.attackAnimatedSprite.gotoAndPlay(0);
+        this.target.addChild(this.attackAnimatedSprite)
+    }
     attack() {
         if (this.state === HERO_STATE.attack) return;
         this.state = HERO_STATE.attack;

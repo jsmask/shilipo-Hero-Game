@@ -8,7 +8,7 @@ import createEnemy from "./enemy";
 import { playBgm, pauseBgm } from "./audio"
 import Talk from "./talk";
 import { ENEMY_STATE } from "./types";
-import talkData from "./talkData"
+import { talkData, talkResult } from "./talkData"
 import Item from "./item"
 import { TimelineMax } from "gsap"
 
@@ -30,7 +30,8 @@ const createDefalutOptions = () => {
         timeRect: null,
         powerTxt: null,
         stageContainer: null,
-        uiContainer: null
+        uiContainer: null,
+        hero: null
     }
 }
 
@@ -56,7 +57,7 @@ export default class MainScene extends Scene {
         this.addNpc()
         return this
     }
-    endGame() {
+    async endGame() {
         this.time = 0;
         this.isGameOver = true;
         this.uiContainer.visible = false;
@@ -68,6 +69,22 @@ export default class MainScene extends Scene {
         this.enemyList.forEach(e => {
             e && e.out();
         })
+        await this.npc.wait();
+        if (this.score < 200) {
+            await this.talk.show(talkResult[0])
+        }
+        else if (this.score >= 200 && this.score < 200) {
+            await this.talk.show(talkResult[1])
+        }
+        else if (this.score >= 300 && this.score < 500) {
+            await this.talk.show(talkResult[2])
+        }
+        else {
+            await this.talk.show(talkResult[3])
+        }
+
+        this.npc.out();
+        this.hero.wait()
         Bus.$emit("gameover", {
             score: this.score,
             count: this.count,
@@ -186,7 +203,7 @@ export default class MainScene extends Scene {
             let enemy = createEnemy(enemyTypes[~~random(0, enemyTypes.length)], {
                 x: -random(20, 60),
                 y: random(-50, 270),
-                posY: random(320, this.stage.height),
+                posY: random(360, this.stage.height + 60),
                 stage: this.stageContainer
             })
             this.enemyList.push(enemy)
@@ -223,11 +240,11 @@ export default class MainScene extends Scene {
     }
     async onStart() {
         await this.stageTalk();
-        await this.beginGame()
+        await this.beginGame(true);
     }
-    async beginGame() {
+    async beginGame(isStart = false) {
         this.isStartGame = true;
-        this.npc.out();
+        isStart ? this.npc.out() : this.npc.hide();
         playBgm();
         Bus.$off("addCount")
         Bus.$off("attack")
@@ -264,8 +281,8 @@ export default class MainScene extends Scene {
             .to(this.countTxt.scale, .1, { x: 1, y: 1 })
         if (random(0, 100) < obj.chance) {
             new Item({
-                x: obj.x,
-                y: obj.y,
+                x: obj.diePos.x,
+                y: obj.diePos.y,
                 stage: this.stageContainer,
                 hero: this.hero,
                 type: obj.itemType
@@ -281,10 +298,15 @@ export default class MainScene extends Scene {
         });
     }
     async stageTalk() {
-        await this.talk.show(talkData[0])
-        await this.talk.show(talkData[1])
-        await this.talk.show(talkData[2])
-        await this.talk.show(talkData[3])
-        await this.talk.show(talkData[4])
+        let talkList = []
+        for (let i = 0; i < talkData.length; i++) {
+            talkList.push(this.talk.show.bind(this.talk, talkData[i]))
+        }
+        return new Promise(async (resove, reject) => {
+            while (talkList.length > 0) {
+                await talkList.shift()()
+            }
+            resove()
+        })
     }
 }

@@ -37,11 +37,11 @@ class Talk {
         this.hide()
         Bus.$emit("talk_next")
     }
-    show({ name, face, content }) {
+    show({ name, face, content, position }) {
         this.target.visible = false;
         return new Promise((resolve, reject) => {
             this.clearChildren();
-            this.drawInfo({ name, face, content });
+            this.drawInfo({ name, face, content, position });
             this.target.visible = true;
             Bus.$on("talk_next", () => {
                 Bus.$off("talk_next")
@@ -49,20 +49,23 @@ class Talk {
             })
         })
     }
-    drawInfo({ name, face, content }) {
+    drawInfo({ name, face, content, position = "right" }) {
         this.drawRect();
-        this.drawName(name)
-        this.drawFace(face)
-        this.drawContent(content)
+        this.drawName(name, position)
+        this.drawFace(face, position)
+        this.drawContent(content, position)
     }
-    drawFace(name) {
+    drawFace(name, position) {
         const { width, height } = this.stage;
         this.faceSprite = createSprite({ name, anchor: 0 })
         this.faceSprite.x = width - this.faceSprite.width - 15
         this.faceSprite.y = height - this.faceSprite.height
+        if (position == "left") {
+            this.faceSprite.x = 15
+        }
         this.box.addChild(this.faceSprite)
     }
-    drawName(name = "???") {
+    drawName(name = "???", position) {
         const { width, height } = this.stage;
         this.nameText = new Text(name + "：", {
             fontSize: 24,
@@ -72,9 +75,12 @@ class Talk {
         })
         this.nameText.x = 20;
         this.nameText.y = height - 185;
+        if (position == "left") {
+            this.nameText.x = 215
+        }
         this.box.addChild(this.nameText)
     }
-    drawContent(content = "") {
+    drawContent(content = "", position) {
         const { width, height } = this.stage;
         let contentList = content.split("")
         content.split("").forEach((char, index) => {
@@ -91,6 +97,9 @@ class Talk {
         })
         this.contentText.x = 20;
         this.contentText.y = height - 145;
+        if (position == "left") {
+            this.contentText.x = 215
+        }
         this.box.addChild(this.contentText)
     }
     hide() {

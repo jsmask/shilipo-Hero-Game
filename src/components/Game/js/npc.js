@@ -34,22 +34,56 @@ class Npc {
         for (let i = 16; i <= 36; i++) {
             drink_list.push(createSprite({ name: "npc_drink_" + i, anchor: 0 }).texture);
         }
-        this.drinkAnimatedSprite = new AnimatedSprite(drink_list);
-        this.drinkAnimatedSprite.loop = true;
-        this.drinkAnimatedSprite.animationSpeed = .1;
-        this.drinkAnimatedSprite.gotoAndPlay(0);
-        this.drinkAnimatedSprite.onComplete = () => {
+        this.animatedSprite = new AnimatedSprite(drink_list);
+        this.animatedSprite.loop = true;
+        this.animatedSprite.animationSpeed = .1;
+        this.animatedSprite.gotoAndPlay(0);
+        this.animatedSprite.onComplete = () => {
             // this.out();
             // this.drink();
         }
-        this.target.addChild(this.drinkAnimatedSprite)
+        this.target.addChild(this.animatedSprite)
+    }
+    hide() {
+        this.target.visible = false;
+    }
+    show() {
+        this.target.visible = true;
+    }
+    wait() {
+        this.state = NPC_STATE.wait
+        this.show();
+        let wait_list = []
+        this.target.removeChildren(0, this.target.children.length)
+        for (let i = 0; i < 2; i++) {
+            wait_list.push(createSprite({ name: "npc_wait_" + i, anchor: 0 }).texture);
+        }
+        this.animatedSprite = new AnimatedSprite(wait_list);
+        this.animatedSprite.loop = true;
+        this.animatedSprite.animationSpeed = .1;
+        this.animatedSprite.gotoAndPlay(0);
+        this.target.addChild(this.animatedSprite)
+
+        return new Promise((resove, reject) => {
+            this.waitAni = new TimelineMax({
+                onComplete: () => {
+                    resove()
+                }
+            })
+            this.waitAni.fromTo(this.target, .8, {
+                alpha: 0
+            }, {
+                alpha: 1,
+            })
+            this.waitAni.play()
+        })
     }
     out() {
-        if(this.state === NPC_STATE.out) return;
+        if (this.state === NPC_STATE.out) return;
         this.state = NPC_STATE.out
         this.outAni = new TimelineMax({
-            onComplete: () => { 
-                this.destroy();
+            onComplete: () => {
+                this.hide()
             }
         })
         this.outAni.to(this.target, 1, {

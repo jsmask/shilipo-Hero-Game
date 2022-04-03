@@ -15,6 +15,8 @@ const heroList = {
     hero_attack_0: getHeroImageUrl("207-5"),
     hero_attack_1: getHeroImageUrl("207-6"),
     hero_attack_2: getHeroImageUrl("207-7"),
+    hero_wait_0: getHeroImageUrl("833-11"),
+    hero_wait_1: getHeroImageUrl("833-12"),  
 }
 
 const enemyList0 = {
@@ -51,6 +53,8 @@ const enemyList4 = {
 
 const npcList = {
     npc_face_0: getNpcImageUrl("17-3"),
+    npc_wait_0: getNpcImageUrl("517-1"),
+    npc_wait_1: getNpcImageUrl("517-2"),
 }
 
 for (let i = 16; i <= 36; i++) {

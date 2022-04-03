@@ -101,11 +101,13 @@ export default class EndScene extends Scene {
         this.btn.on("pointerdown", this.handleRestart, this)
     }
     handleRestart() {
+        pauseSuccess()
         playClick();
         this.hide();
         Bus.$emit("restart")
     }
     handleReset() {
+        pauseSuccess()
         playClick();
         this.hide();
         Bus.$emit("reset")
