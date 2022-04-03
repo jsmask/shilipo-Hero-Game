@@ -76,7 +76,7 @@ export default class MainScene extends Scene {
         else if (this.score >= 150 && this.score < 200) {
             await this.talk.show(talkResult[1])
         }
-        else if (this.score >= 300 && this.score < 400) {
+        else if (this.score >= 300 && this.score < 450) {
             await this.talk.show(talkResult[2])
         }
         else {

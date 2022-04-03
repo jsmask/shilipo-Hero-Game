@@ -47,7 +47,6 @@ export default class Game {
 
     this.loaderTextures().then(res => {
       Object.entries(res).forEach(([key, value]) => setTextures(key, value.texture))
-      console.log(getTexturesAll())
       this.render()
     })
 
