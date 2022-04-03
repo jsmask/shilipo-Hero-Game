@@ -70,13 +70,13 @@ export default class MainScene extends Scene {
             e && e.out();
         })
         await this.npc.wait();
-        if (this.score < 200) {
+        if (this.score < 150) {
             await this.talk.show(talkResult[0])
         }
-        else if (this.score >= 200 && this.score < 200) {
+        else if (this.score >= 150 && this.score < 200) {
             await this.talk.show(talkResult[1])
         }
-        else if (this.score >= 300 && this.score < 500) {
+        else if (this.score >= 300 && this.score < 400) {
             await this.talk.show(talkResult[2])
         }
         else {
